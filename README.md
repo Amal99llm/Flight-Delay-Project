@@ -1,92 +1,90 @@
-for mat this for red me # Flight Delay Prediction Model
+# ✈️ Flight Delay Prediction Model
 
-This repository contains a machine learning project for predicting flight delays using GPU-accelerated libraries (RAPIDS, cuML, XGBoost). The model achieves *82.90%* accuracy in predicting whether a flight will be delayed.
+This repository contains a machine learning project for predicting flight delays using **GPU-accelerated libraries**: [RAPIDS](https://rapids.ai/), `cuML`, and `XGBoost`.  
+The final model achieves **82.90% accuracy** in predicting whether a flight will be delayed by more than 15 minutes.
 
-## Dataset
+---
 
-The analysis uses a dataset of 3 million flight records (flights_sample_3m.csv) containing various attributes:
-- Flight dates, airlines, and flight numbers
-- Origin and destination airports
-- Scheduled and actual departure/arrival times
-- Flight distance and elapsed time
-- Delay information categorized by cause
+## 📦 Dataset
 
-### Data Overview
-- 3,000,000 flight records
-- 32 columns (9 categorical, 4 integer, 19 float features)
-- Target variable: Flight delays (defined as arrival delay > 15 minutes)
-- Class distribution: ~17.18% delayed flights
+We use a dataset of **3 million flight records** (`flights_sample_3m.csv`) with rich features including:
 
-## Exploratory Data Analysis
+- Flight dates, airlines, and flight numbers  
+- Origin and destination airports  
+- Scheduled and actual departure/arrival times  
+- Flight distance and elapsed time  
+- Delay information categorized by cause  
 
-The exploratory analysis revealed:
-1. *Distribution of delays*: Most flights arrive on time or early, with a right-skewed distribution of delays
-2. *Airline performance*: Significant variation in average delays across airlines (best performer has negative average delay)
-3. *Distance vs delays*: No strong linear relationship between flight distance and delay time
+### 🧾 Data Overview
 
-## Data Preprocessing
+- **3,000,000** flight records  
+- **32 columns**:  
+  - 9 categorical  
+  - 4 integer  
+  - 19 float features  
+- **Target variable**: `IS_DELAYED`  
+  (1 if arrival delay > 15 minutes)  
+- **Class distribution**: ~17.18% delayed flights
+
+---
+
+## 📊 Exploratory Data Analysis
+
+Key insights from EDA:
+
+1. **Delay Distribution**: Most flights are on time or early; delay distribution is right-skewed  
+2. **Airline Performance**: Major differences in average delay by airline  
+3. **Distance vs Delay**: No strong linear relationship observed
+
+---
+
+## 🔧 Data Preprocessing
 
 The preprocessing pipeline includes:
-- Handling missing values with mean/mode imputation
+
+- Handling missing values (mean/mode imputation)  
 - Feature engineering:
-  - Extracting time features (day of week, month, year, departure hour)
-  - Airport importance features (major origin/destination)
-  - Distance categorization
-  - Airline encoding
-- Data conversion to GPU format using RAPIDS (cuDF)
+  - Time features (month, day of week, hour, year)
+  - Airport frequency (major origin/destination)
+  - Distance binning
+  - Airline encoding  
+- Class imbalance handling using weighted classes  
+- Conversion to **GPU format** using RAPIDS `cuDF` for acceleration
 
-## Models Compared
+---
 
-Two models were trained and compared:
-1. *Random Forest Classifier*
-   - Accuracy: 82.86%
-   - Training time: 13.73 seconds
-   - Prediction time: 19.48 seconds
+## 🤖 Models Compared
 
-2. *XGBoost Classifier*
-   - Accuracy: 82.90%
-   - Training time: 18.53 seconds
-   - Prediction time: 2.15 seconds
+Three models were trained and evaluated using GPU and CPU where applicable:
 
-XGBoost was selected as the final model due to its slightly higher accuracy and significantly faster prediction time.
+### 1. 💠 Logistic Regression (cuML)
+- **Accuracy**: 57.67%  
+- **Training time**: ~0.97 sec  
+- **Prediction time**: ~0.65 sec  
+- Used for baseline comparison
 
-## Usage
+---
 
-### Prerequisites
-- Python 3.x
-- Required packages: numpy, pandas, joblib, xgboost, cudf, cuml (for GPU acceleration)
+### 2. 🌲 Random Forest Classifier (cuML)
+- **Accuracy**: 82.86%  
+- **Training time**: 13.73 sec  
+- **Prediction time**: 19.48 sec
 
-### Making Predictions
-Use the provided prediction.py script:
+---
 
-bash
-python prediction.py --input your_data.csv --output predictions.csv --model XGBoost_model.joblib
+### 3. ⚡ XGBoost Classifier (GPU)
+- **Accuracy**: 82.90% ✅  
+- **Training time**: 18.53 sec  
+- **Prediction time**: 2.15 sec  
+- **Selected as final model** due to best performance and fastest prediction
 
+---
 
-### Arguments
-- --input: Path to the input CSV file (required)
-- --output: Path to save predictions (required)
-- --model: Path to the model file (defaults to 'XGBoost_model.joblib')
+## 🚀 Usage
 
-## Files in Repository
+### 🔧 Prerequisites
 
-- flight_delay_prediction.ipynb: Jupyter notebook with complete analysis and model building
-- XGBoost_model.joblib: Serialized XGBoost model
-- prediction.py: Script for making predictions with the trained model
-- README.md: Project documentation
+Install required Python packages:
 
-## Performance Summary
-
-The model achieves good performance with a balanced approach to identifying delayed flights:
-- Overall accuracy: 82.90%
-- Fast prediction time (2.15 seconds for 600,000 test samples)
-- Successfully handles class imbalance (only ~17% of flights are delayed)
-
-## Future Improvements
-
-Potential areas for enhancement:
-1. More extensive feature engineering (airport congestion, weather data integration)
-2. Hyperparameter optimization
-3. Ensemble methods combining multiple models
-4. Testing additional algorithms (Neural Networks, Gradient Boosting variants)
-5. Deployment as a web service for real-time predictions
+```bash
+pip install numpy pandas xgboost joblib cudf cuml
