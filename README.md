@@ -79,12 +79,3 @@ Three models were trained and evaluated using GPU and CPU where applicable:
 - **Selected as final model** due to best performance and fastest prediction
 
 ---
-
-## 🚀 Usage
-
-### 🔧 Prerequisites
-
-Install required Python packages:
-
-```bash
-pip install numpy pandas xgboost joblib cudf cuml
